@@ -18,7 +18,6 @@ public class ShowGame extends Activity
 		
         TextView printname = (TextView) findViewById(R.id.username);
 		
-        // TextView printuser = (TextView) findViewById(R.id.username);
         Button closeButton = (Button) findViewById(R.id.closeButton);
 		
         Intent i = getIntent();

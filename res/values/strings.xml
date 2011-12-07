@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, HotPotatoActivity!</string>
-    <string name="app_name">Hot Potato</string>
+    <string name="hello">Welcome to Speed Spud!</string>
+    <string name="app_name">Speed Spud</string>
     
-    <string name="live_folder_name">Test Page</string>
+    <string name="live_folder_name">List of Games</string>
     
 
 </resources>

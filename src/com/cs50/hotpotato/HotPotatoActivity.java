@@ -1,8 +1,6 @@
 package com.cs50.hotpotato;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -58,21 +56,14 @@ public class HotPotatoActivity extends Activity
 				}
 				else
 				{
-					
-					login.setOnClickListener(new View.OnClickListener() 
-					{
-						public void onClick(View arg0) 
-						{
-							Intent nextScreen = new Intent(getApplicationContext(), ShowGame.class);
-							
-							//Sending data to another Activity
-							nextScreen.putExtra("name", sUserName);
 
-							// starting new activity
-							startActivity(nextScreen);
+					Intent nextScreen = new Intent(getApplicationContext(), ShowGame.class);
 
-						}
-					}); 
+					//Sending data to another Activity
+					nextScreen.putExtra("name", sUserName);
+
+					// starting new activity
+					startActivity(nextScreen);
 
 				}
 			}
@@ -119,11 +110,11 @@ public class HotPotatoActivity extends Activity
 			// check if username exists, log in if it does
 			if (oneUser.equals(username))
 			{	
-/*				TextView tv = new TextView(this);
+				/*				TextView tv = new TextView(this);
 				tv.setText("Welcome " + oneUser);
 				setContentView(tv); 
 
-*/				//	Toast.makeText(HotPotatoActivity.this, "Welcome" + oneUser,
+				 */				//	Toast.makeText(HotPotatoActivity.this, "Welcome" + oneUser,
 				//			Toast.LENGTH_SHORT).show();
 
 				return true;
