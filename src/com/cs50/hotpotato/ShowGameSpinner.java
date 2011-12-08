@@ -16,7 +16,13 @@
 
 package com.cs50.hotpotato;
 
-import com.cs50.hotpotato.R;
+import java.io.IOException;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.jsoup.nodes.Element;
+
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,12 +31,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
+
 
 /**
  * Displays an Android spinner widget backed by data in an array. The
@@ -109,30 +116,81 @@ public class ShowGameSpinner extends Activity
 
 		TextView printname = (TextView) findViewById(R.id.username);
 		Intent i = getIntent();
-		// Receiving the Data
+		// Receiving the Data from previous activity -- specifically the username of the player
 		String name = i.getStringExtra("name");
 		// Displaying Received data
 		printname.setText(name);
 
 		Spinner spinner = (Spinner) findViewById(R.id.spinner1);
-		
-		
-		this.mAdapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item);  
+
+
+ 		this.mAdapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item);  
 		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);        
 		spinner.setAdapter(this.mAdapter);
 		
-		// have to add all of the possible games to play into the spinner...(a.k.a. this.mAdapter)
-		this.mAdapter.add("dummy item");  
-
 		
+		
+		// have to add all of the possible games to play into the spinner...(a.k.a. this.mAdapter)
+
+		// BUT FIRST, have get the current user's ID
+		String userID = getUserID(name);
+
+		// and then i want to add all of the games...
+		// use this doc to get the potatoIDs for games the user is in
+		Document docgame = null;
+
+		// connect to webpage containing user IDs and associated games
+		try 
+		{
+			docgame = Jsoup.connect("http://speedspud.com/android/allGames.php/").get();
+			
+			Elements rows = docgame.select("p");
+
+			// iterate through rows looking for rows containing the user's ID
+			for (Element oneRow : rows)
+			{
+				String temp = oneRow.toString();
+
+				// search this row for current user's ID
+				int rowID = temp.indexOf("userID " + userID + " gameID");		
+
+				// if this is the row for the given user ID
+				if (rowID != -1)
+				{
+					// get the potato ID
+					int startID = temp.indexOf("gameID:");
+					startID = startID + 8;
+					String tempID = temp.substring(startID);
+
+					// end of userid
+					int endID = tempID.indexOf("</p>");
+
+					String potatoID = tempID.substring(0, endID);
+
+					String gameName = getGameName(potatoID);
+					
+					this.mAdapter.add(gameName);  
+				}
+			}
+			
+		} 
+		catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+
+		// this.mAdapter.add("dummy item");  
+
+
 		// creating a backing mLocalAdapter for the Spinner from the string-array in the strings.xml file
 		// this.mAdapter = ArrayAdapter.createFromResource(this, R.array.Planets, android.R.layout.simple_spinner_dropdown_item);
-		
+
 
 		// listener triggered when user has selected an item in the spinner
 		OnItemSelectedListener spinnerListener = new myOnItemSelectedListener(this,this.mAdapter);
-		
-				
+
+
 		spinner.setOnItemSelectedListener(spinnerListener);
 
 		// Binding Click event to Button
@@ -147,6 +205,90 @@ public class ShowGameSpinner extends Activity
 
 	}
 
+	private String getGameName (String potatoID)
+	{
+		Document doc = null;
+
+		// connect to webpage containing potato game information
+		try 
+		{
+			doc = Jsoup.connect("http://speedspud.com/android/gameInfo.php/").get();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Elements rows = doc.select("p");
+
+		// iterate through rows looking for rows containing the user's ID
+		for (org.jsoup.nodes.Element oneRow : rows)
+		{
+			String temp = oneRow.toString();
+
+			// search this row for current potato ID
+			int rowID = temp.indexOf("potatoID: " + potatoID + " gameName");		
+
+			// if this is a row with the given potato ID
+			if (rowID != -1)
+			{
+				// get the potato game name
+				int startName = temp.indexOf("gameName:");
+				startName = startName + 9;
+				String tempName = temp.substring(startName);
+
+				// end of game name
+				int endID = tempName.indexOf(" currentUser:");
+
+				String gameName = tempName.substring(0, endID);	
+
+				return gameName;
+			}
+		}
+		return null;
+	}
+
+	private String getUserID (String username)
+	{
+		Document doc = null;
+
+		// connect to webpage containing usernames and user IDs
+		try 
+		{
+			doc = Jsoup.connect("http://speedspud.com/android/userID.php/").get();		
+			Elements rows = doc.select("p");
+
+			for (Element oneRow : rows)
+			{
+				String temp = oneRow.toString();
+
+				// search this row for current user's username
+				int rowID = temp.indexOf(username);		
+
+				// if this is the row for the given username
+				if (rowID != -1)
+				{
+					// get the user ID
+					int startID = temp.indexOf("ID:");
+					startID = startID + 4;
+					String tempID = temp.substring(startID);
+
+					// end of userid
+					int endID = tempID.indexOf("</p>");
+
+					String userID = tempID.substring(0, endID);
+
+					return userID;
+				}
+			}
+			return null;
+		} 
+		catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	/**
 	 *  A callback listener that implements the
@@ -155,7 +297,8 @@ public class ShowGameSpinner extends Activity
 	 *  when the user selects an item from the View.
 	 *
 	 */
-	public class myOnItemSelectedListener implements OnItemSelectedListener {
+	public class myOnItemSelectedListener implements OnItemSelectedListener 
+	{
 
 		/*
 		 * provide local instances of the mLocalAdapter and the mLocalContext

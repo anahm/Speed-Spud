@@ -5,19 +5,8 @@
     <string name="app_name">Speed Spud</string>
     
     <string name="testname">View Username</string>
-    <string name="live_folder_name">Select Game</string>
+    <string name="live_folder_name">Pick Your Potato Poison</string>
     
-    <string-array name="Planets">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
-        <item>Pluto</item>
-    </string-array>
-    <string name="planet_prompt">Select a planet</string>
+    <string name="spinner_prompt">Select a Game</string>
 
 </resources>
