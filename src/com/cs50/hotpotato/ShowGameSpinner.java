@@ -150,15 +150,14 @@ public class ShowGameSpinner extends Activity
 
 					// end of userid
 					int endID = tempID.indexOf("</p>");
-
+					
+					// *** DO WE NEED THIS??? 
 					String potatoID = tempID.substring(0, endID);
-
 					String gameName = getGameName(potatoID);
 					
 					this.mAdapter.add(gameName);  
 				}
 			}
-			
 		} 
 		catch (IOException e) 
 		{
@@ -166,12 +165,8 @@ public class ShowGameSpinner extends Activity
 			e.printStackTrace();
 		} 
 
-
-
 		// listener triggered when user has selected an item in the spinner
 		OnItemSelectedListener spinnerListener = new myOnItemSelectedListener(this,this.mAdapter);
-
-
 		spinner.setOnItemSelectedListener(spinnerListener);
 
 		// Binding Click event to Button

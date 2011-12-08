@@ -4,26 +4,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
-        android:id="@+id/frameLayout1"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/waitingText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.81" >
+        android:layout_gravity="center_horizontal"
+        android:text="Time to Chillax."
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <ImageButton
-            android:id="@+id/waitingImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/couch_potato" />
+    <ImageButton
+        android:id="@+id/waitingImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/couch_potato" />
 
-        <TextView
-            android:id="@+id/waitingText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Time to Chillax."
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-    </FrameLayout>
+    <Button
+        android:id="@+id/goback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/waitingImage"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:text="Go Back" />
 
 </LinearLayout>
