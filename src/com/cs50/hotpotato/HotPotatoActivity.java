@@ -8,7 +8,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.cs50.hotpotato.R;
-import com.cs50.hotpotato.ShowGame;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -42,13 +41,13 @@ public class HotPotatoActivity extends Activity
 				// this gets the resources in the xml file and assigns it to a local variable of type EditText
 				EditText usernameEditText = (EditText) findViewById(R.id.txt_username);
 				EditText passwordEditText = (EditText) findViewById(R.id.txt_password);
-
+				
 				// the getText() gets the current value of the text box
 				// the toString() converts the value to String data type
 				// then assigns it to a variable of type String
 				final String sUserName = usernameEditText.getText().toString();
 
-				// this just catches the error if the program cant locate the GUI stuff
+				// this just catches the error if the program can't locate the GUI stuff
 				if(usernameEditText == null || passwordEditText == null || !checkUser(sUserName))
 				{
 					Toast.makeText(HotPotatoActivity.this, "Couldn't find the username", 
@@ -57,7 +56,7 @@ public class HotPotatoActivity extends Activity
 				else
 				{
 
-					Intent nextScreen = new Intent(getApplicationContext(), ShowGame.class);
+					Intent nextScreen = new Intent(getApplicationContext(), ShowGameSpinner.class);
 
 					//Sending data to another Activity
 					nextScreen.putExtra("name", sUserName);
@@ -76,7 +75,9 @@ public class HotPotatoActivity extends Activity
 		try 
 		{
 			doc = Jsoup.connect("http://speedspud.com/android/userInfo.php/").get();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

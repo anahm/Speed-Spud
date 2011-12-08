@@ -3,9 +3,10 @@
     package="com.cs50.hotpotato"
     android:versionCode="1"
     android:versionName="1.0" >
-	
-	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	
+
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+
     <uses-sdk android:minSdkVersion="10" />
 
     <application
@@ -20,12 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity 
-            android:name=".ShowGame"
-            android:label="@string/live_folder_name">
-      	</activity>            
-            
+        <activity
+            android:label="@string/testname"
+            android:name=".ShowGame" >
+        </activity>
+        <activity
+            android:label="@string/live_folder_name"
+            android:name=".ShowGameSpinner" >
+        </activity>
     </application>
 
 </manifest>

@@ -18,8 +18,6 @@ public class ShowGame extends Activity
 		
         TextView printname = (TextView) findViewById(R.id.username);
 		
-        Button closeButton = (Button) findViewById(R.id.closeButton);
-		
         Intent i = getIntent();
 
         // Receiving the Data
@@ -27,13 +25,13 @@ public class ShowGame extends Activity
         
         // Displaying Received data
         printname.setText(name);
-        
+
         // Binding Click event to Button
+        Button closeButton = (Button) findViewById(R.id.closeButton);
         closeButton.setOnClickListener(new View.OnClickListener() 
         {
 			public void onClick(View arg0) 
 			{
-				//Closing SecondScreen Activity
 				finish();
 			}
 		});
