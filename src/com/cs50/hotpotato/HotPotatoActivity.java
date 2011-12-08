@@ -63,7 +63,6 @@ public class HotPotatoActivity extends Activity
 
 					// starting new activity
 					startActivity(nextScreen);
-
 				}
 			}
 		});
@@ -105,13 +104,6 @@ public class HotPotatoActivity extends Activity
 				// check if username exists, log in if it does
 				if (oneUser.equals(username))
 				{	
-					/*				TextView tv = new TextView(this);
-					tv.setText("Welcome " + oneUser);
-					setContentView(tv); 
-
-					 */				//	Toast.makeText(HotPotatoActivity.this, "Welcome" + oneUser,
-					//			Toast.LENGTH_SHORT).show();
-
 					return true;
 				}
 			}

@@ -45,56 +45,41 @@ import android.widget.Toast;
  */
 public class ShowGameSpinner extends Activity 
 {
-
-	/**
-	 * Fields to contain the current position and display contents of the spinner
-	 */
+	// fields that will hold current position and contents of spinner
 	protected int mPos;
 	protected String mSelection;
 
-	/**
-	 * ArrayAdapter connects the spinner widget to array-based data.
-	 */
+	// connects spinner widget to array-based data
 	protected ArrayAdapter<CharSequence> mAdapter;
 
-	/**
-	 *  The initial position of the spinner when it is first installed.
-	 */
+	// initial position of spinner when installed
 	public static final int DEFAULT_POSITION = 2;
 
-	/**
-	 * The name of a properties file that stores the position and
-	 * selection when the activity is not loaded.
-	 */
+	// PREFERENCES_FIL = name of properties file that stores position and selection when activity isn't running
 	public static final String PREFERENCES_FILE = "SpinnerPrefs";
 
-	/**
-	 * These values are used to read and write the properties file.
-	 * PROPERTY_DELIMITER delimits the key and value in a Java properties file.
-	 * The "marker" strings are used to write the properties into the file
-	 */
+	// following values are used to read/write properties file
+
+	// PROPERTY_DELIMITER = delimits key and value in Java properties file
 	public static final String PROPERTY_DELIMITER = "=";
 
-	/**
-	 * The key or label for "position" in the preferences file
-	 */
+	// POSITION_KEY = key or label for "position" in preferences file
 	public static final String POSITION_KEY = "Position";
 
-	/**
-	 * The key or label for "selection" in the preferences file
-	 */
+	// SELECTION_KEY = key or label for "selection" in the preferences file	 */
 	public static final String SELECTION_KEY = "Selection";
 
-	public static final String POSITION_MARKER =
-			POSITION_KEY + PROPERTY_DELIMITER;
-
-	public static final String SELECTION_MARKER =
-			SELECTION_KEY + PROPERTY_DELIMITER;
+	// marker strings used to write the properties into the file
+	public static final String POSITION_MARKER = POSITION_KEY + PROPERTY_DELIMITER;
+	public static final String SELECTION_MARKER = SELECTION_KEY + PROPERTY_DELIMITER;
+	
+	// adding an additional thing
+	private String gameName;
 
 	/**
 	 * Initializes the application and the activity.
-	 * 1) Sets the view
-	 * 2) Reads the spinner's backing data from the string resources file
+	 * 1) Sets the view to spinnergame.xml
+	 * 2) Sets the spinner's array data based on info specific php sites
 	 * 3) Instantiates a callback listener for handling selection from the
 	 *    spinner
 	 * Notice that this method includes code that can be uncommented to force
@@ -125,15 +110,16 @@ public class ShowGameSpinner extends Activity
 
 
  		this.mAdapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item);  
-		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);        
+		this.mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);        
 		spinner.setAdapter(this.mAdapter);
 		
-		
+		// this.mAdapter.add("dummy item");  
+
 		
 		// have to add all of the possible games to play into the spinner...(a.k.a. this.mAdapter)
 
 		// BUT FIRST, have get the current user's ID
-		String userID = getUserID(name);
+		final String userID = getUserID(name);
 
 		// and then i want to add all of the games...
 		// use this doc to get the potatoIDs for games the user is in
@@ -180,11 +166,6 @@ public class ShowGameSpinner extends Activity
 			e.printStackTrace();
 		} 
 
-		// this.mAdapter.add("dummy item");  
-
-
-		// creating a backing mLocalAdapter for the Spinner from the string-array in the strings.xml file
-		// this.mAdapter = ArrayAdapter.createFromResource(this, R.array.Planets, android.R.layout.simple_spinner_dropdown_item);
 
 
 		// listener triggered when user has selected an item in the spinner
@@ -194,12 +175,20 @@ public class ShowGameSpinner extends Activity
 		spinner.setOnItemSelectedListener(spinnerListener);
 
 		// Binding Click event to Button
-		Button closeButton = (Button) findViewById(R.id.closeButton);
+		Button closeButton = (Button) findViewById(R.id.playbutton);
 		closeButton.setOnClickListener(new View.OnClickListener() 
 		{
 			public void onClick(View arg0) 
 			{
-				finish();
+				Intent nextScreen = new Intent(getApplicationContext(), PlayGame.class);
+				
+				//Sending data to another Activity
+				nextScreen.putExtra("userID", userID);
+				nextScreen.putExtra("gamename", gameName);
+				
+				// starting new activity
+				startActivity(nextScreen);
+
 			}
 		});
 
@@ -213,30 +202,32 @@ public class ShowGameSpinner extends Activity
 		try 
 		{
 			doc = Jsoup.connect("http://speedspud.com/android/gameInfo.php/").get();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Elements rows = doc.select("p");
 
 		// iterate through rows looking for rows containing the user's ID
-		for (org.jsoup.nodes.Element oneRow : rows)
+		for (Element oneRow : rows)
 		{
 			String temp = oneRow.toString();
 
 			// search this row for current potato ID
-			int rowID = temp.indexOf("potatoID: " + potatoID + " gameName");		
+			int rowID = temp.indexOf(" potatoID: " + potatoID + " currentUser");		
 
 			// if this is a row with the given potato ID
 			if (rowID != -1)
 			{
 				// get the potato game name
 				int startName = temp.indexOf("gameName:");
-				startName = startName + 9;
+				startName = startName + 10;
 				String tempName = temp.substring(startName);
 
 				// end of game name
-				int endID = tempName.indexOf(" currentUser:");
+				int endID = tempName.indexOf(" potatoID:");
 
 				String gameName = tempName.substring(0, endID);	
 
@@ -333,7 +324,8 @@ public class ShowGameSpinner extends Activity
 		 * @param pos - the 0-based position of the selection in the mLocalAdapter
 		 * @param row - the 0-based row number of the selection in the View
 		 */
-		public void onItemSelected(AdapterView<?> parent, View v, int pos, long row) {
+		public void onItemSelected(AdapterView<?> parent, View v, int pos, long row) 
+		{
 
 			ShowGameSpinner.this.mPos = pos;
 			ShowGameSpinner.this.mSelection = parent.getItemAtPosition(pos).toString();
@@ -342,6 +334,8 @@ public class ShowGameSpinner extends Activity
 			 */
 			TextView resultText = (TextView)findViewById(R.id.SpinnerResult);
 			resultText.setText(ShowGameSpinner.this.mSelection);
+			
+			gameName = ShowGameSpinner.this.mSelection;
 		}
 
 		/**
@@ -349,7 +343,8 @@ public class ShowGameSpinner extends Activity
 		 * of onNothingSelected(), even though this implementation does not use it.
 		 * @param parent - The View for this Listener
 		 */
-		public void onNothingSelected(AdapterView<?> parent) {
+		public void onNothingSelected(AdapterView<?> parent) 
+		{
 
 			// do nothing
 
@@ -369,20 +364,22 @@ public class ShowGameSpinner extends Activity
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
-	public void onResume() {
+	public void onResume() 
+	{
 
 		/*
 		 * an override to onResume() must call the super constructor first.
 		 */
 
 		super.onResume();
-
-		/*
+/*
+		
 		 * Try to read the preferences file. If not found, set the state to the desired initial
 		 * values.
-		 */
+		 
 
-		if (!readInstanceState(this)) setInitialState();
+		if (!readInstanceState(this)) 
+			setInitialState();*/
 
 		/*
 		 * Set the spinner to the current state.
@@ -415,20 +412,19 @@ public class ShowGameSpinner extends Activity
 		 * Save the state to the preferences file. If it fails, display a Toast, noting the failure.
 		 */
 
-		if (!writeInstanceState(this)) {
-			Toast.makeText(this,
-					"Failed to write state!", Toast.LENGTH_LONG).show();
-		}
+		if (!writeInstanceState(this)) 
+			Toast.makeText(this,"Failed to write state!", Toast.LENGTH_LONG).show();
 	}
 
 	/**
 	 * Sets the initial state of the spinner when the application is first run.
-	 */
-	public void setInitialState() {
+	 *//*
+	public void setInitialState() 
+	{
 
 		this.mPos = DEFAULT_POSITION;
 
-	}
+	}*/
 
 	/**
 	 * Read the previous state of the spinner from the preferences file
@@ -470,14 +466,14 @@ public class ShowGameSpinner extends Activity
 	 * @param c - The Activity's Context
 	 *
 	 */
-	public boolean writeInstanceState(Context c) {
+	public boolean writeInstanceState(Context c) 
+	{
 
 		/*
 		 * Get the SharedPreferences object for this application
 		 */
 
-		SharedPreferences p =
-				c.getSharedPreferences(ShowGameSpinner.PREFERENCES_FILE, MODE_WORLD_READABLE);
+		SharedPreferences p = c.getSharedPreferences(ShowGameSpinner.PREFERENCES_FILE, MODE_WORLD_READABLE);
 
 		/*
 		 * Get the editor for this object. The editor interface abstracts the implementation of
@@ -502,19 +498,23 @@ public class ShowGameSpinner extends Activity
 
 	}
 
-	public int getSpinnerPosition() {
+	public int getSpinnerPosition() 
+	{
 		return this.mPos;
 	}
 
-	public void setSpinnerPosition(int pos) {
+	public void setSpinnerPosition(int pos) 
+	{
 		this.mPos = pos;
 	}
 
-	public String getSpinnerSelection() {
+	public String getSpinnerSelection() 
+	{
 		return this.mSelection;
 	}
 
-	public void setSpinnerSelection(String selection) {
+	public void setSpinnerSelection(String selection) 
+	{
 		this.mSelection = selection;
 	}
 }
